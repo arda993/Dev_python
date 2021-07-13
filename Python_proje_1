@@ -2,6 +2,12 @@
 # Ornek input olarak =  [[1,'a',['cat'],2],[[[3]],'dog'],4,5]
 # Beklenilen sonuc   =  [1,'a','cat',2,3,'dog',4,5]
 
+
+# Bu input'da farklı olaran str olarak verilen saylar ve fazladan kelimeler yer aliyor
+# Bir baska input    =  [[1,'a',['cat'],2],[[[3]],'dog'],4,5,[['apple']],'banana'"1"]   
+# Beklenilen sonuc   =  [1, 'a', 'cat', 2, 3, 'dog', 4, 5, 'apple', 'banana', '1']
+
+
 ### Kod
 
 def flatten(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonksyon
