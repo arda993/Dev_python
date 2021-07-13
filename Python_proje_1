@@ -19,7 +19,7 @@ def flatten(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonks
     status  = False
     
     
-    x = inpt[0]
+    x = inpt
     flat_s =[]
     for c in x:
         if c == ",":
