@@ -2,45 +2,42 @@
 # Ornek input olarak =  [[1,'a',['cat'],2],[[[3]],'dog'],4,5]
 # Beklenilen sonuc   =  [1,'a','cat',2,3,'dog',4,5]
 
-
 # Bu input'da farklı olaran str olarak verilen saylar ve fazladan kelimeler yer aliyor
 # Bir baska input    =  [[1,'a',['cat'],2],[[[3]],'dog'],4,5,[['apple']],'banana'"1"]   
 # Beklenilen sonuc   =  [1, 'a', 'cat', 2, 3, 'dog', 4, 5, 'apple', 'banana', '1']
 
-
 ### Kod
 
-def flatten(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonksyon
-    last_value = []
-    l    = []
-    note = []
-    ct =0
-    control = True
-    status  = False
-    
-    
-    x = inpt
+def split(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonksyon
+    last_value = []   # input olarak verilen veriyi istediğimiz filtreden geçirerek bu değşkenin içine atiyoruz
+    l    = []         # geçici hafiza olarak kulanıyoruz
+    note = []         # str olarak girilmiş int değerlerin indexlerini not aliyoruz
+    status  = False   #  değerin " içerisinde olup olmadığını yani string olup olmadğını kontrol ediyor
+    ct =0             # counter
     flat_s =[]
+    
+    
+    
     for c in x:
-        if c == ",":
-            continue
         flat_s.append(c)
 
     for i in range(len(flat_s)):
         e=flat_s[i]
+        
+        
         if e =="[" or e== "]":
             continue
-        elif (e== "'" or e== '"') and control:
-            control = False
-            status  = True
+            
+     
+        elif (e== "'" or e== '"') and status == False: #bu kısımda eğer "" içerisinde yazılmış bir değer varsa onu bir 
+            status  = True                             #sonraki " görene kadar birleştirip tek bir değer olarak listeye katiyor
             continue
-        elif (e== "'" or e== '"') and control== False:
-            control = True
+        elif (e== "'" or e== '"') and status:
             status  = False
             last_value.append("".join(l))
 
             try:
-                int("".join(l))
+                int("".join(l))      # değerimizin int e dönüşebiliyorsa indexi kayit ediliyor
                 note.append(ct)
             except ValueError:
                 pass
@@ -52,20 +49,96 @@ def flatten(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonks
         else:
             last_value.append(e)
             ct+=1
-    for i in range(len(last_value)):
+    
+    """
+    Burada ilk inputta intiger olarak girilmiş sayıları intigera dönüştürüp listeye ekliyoruz dönüştürülmeyenler ise
+    string olarak kaliyor.
+    """
 
+    
+    for i in range(len(last_value)):
         try:
             last_value[i]=int(last_value[i])
         except ValueError:
             pass
-
-    for e in note:
+    
+    
+    """
+    # yukarıda indexini kaydetiğimiz ve intigera dönüşen string olaran girilmiş sayılar geri stringe dönüştürülüyor
+    """    
+    for e in note: 
         last_value[e]=str(last_value[e])
         
     return last_value
+
+
+
+    """
+    split fonksyonu eğer listesnin içinde 10 veya 10 dan büyük eleman varsa her bir basamağını ayrı bir eleman olarak 
+    aliyordu o ayrı yazılan elemanları birleştirmek için combination fonksyonu yazılmıştır
+
+    """
+def combination (inpt):
+    xt   =inpt
+    arr  = []   
+    """
+    Bu döngüde eğer virgülden önce birden fazla sayı yanyana yazilyiorsa onu saptıyoruz
+    [3, 2, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 2, 1, 0, 1, 0, 0]
+    eğer birden yüksek rakam varsa orada peşpeşe yazılmış bir sayı oldğunu anlıyoruz
+    """
+    
+    for i in range(len(xt)-1):
+        ct1     = 0
+
+        while True:   
+
+            if isinstance(xt[i+ct1], int):
+                ct1 += 1
+            else:
+                arr.append(ct1)
+                break
+
+
+    """
+    Bu döngüde ise yukarıda saptadığımız bitişik sayıları birleştirip tek bir eleman olarak listeye yeniden ekliyoruz
+    """
     
     
+    while True:
+        temp=""
+        if max(arr)>1:
+            maxx = max(arr)
+            idx  = arr.index(maxx)
+            for e in xt[idx:(idx+maxx)]:
+                temp+= str(e)
+
+            for _ in range(maxx):
+                del xt[idx]
+
+            for _ in range(maxx-1):
+                del arr[idx]
+
+            xt.insert(idx,int(temp))
+
+        else: 
+            break
+
+            
+    """
+    En son işlem olarakda listedeki virgüllerden kurtulup listemizin son halini elde ediyoruz 
+    """
+    
+    output =[]
+    for e in xt:
+        if e == ",":
+            continue
+        output.append(e)
+        
+    return output
+
+
+
 # Ana gövde
 
 inpt=list(input())
-print(flatten(inpt))
+print(combination(split(inpt)))
