@@ -67,5 +67,5 @@ def flatten(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonks
     
 # Ana gövde
 
-inpt=list(input().split())
+inpt=list(input())
 print(flatten(inpt))
