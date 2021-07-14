@@ -1,1 +1,271 @@
+# Verilen input'u tersine çeviren bir kod yazmak amacımız. Eğer verilen liste cok katmanlı ise iç katmanlarında tersine çevrilmesi isteniyor
+# Ornek input olarak =  [[1, 2], [3, 4], [5, 6, 7]]
+# Beklenilen sonuc   =  [[[7, 6, 5], [4, 3], [2, 1]]
 
+# Bu input'da farklı olarak fazladan bir katman daha ve ekstra bir string bulunuyor
+# Bir baska input    =  [23,[1, 2], [3, 4,[11,12]], [5, 6,"elma", 7]]   
+# Beklenilen sonuc   =  [[7, 'elma', 6, 5], [[12, 11], 4, 3], [2, 1], 23]
+
+# geliştirme notu olarak bize verilen inputta değerler arasında birer space bulunuyor fakat bu kodda onu ekleyemedim belki ilerde programın tam olması adına eklenilebilir
+
+### Kod
+
+def split(x):       # verilen veriyi katmanlarından tek boyuta geçiren fonksyon
+    last_value = []   # input olarak verilen veriyi istediğimiz filtreden geçirerek bu değşkenin içine atiyoruz
+    l    = []         # geçici hafiza olarak kulanıyoruz
+    note = []         # str olarak girilmiş int değerlerin indexlerini not aliyoruz
+    status  = False   #  değerin " içerisinde olup olmadığını yani string olup olmadğını kontrol ediyor
+    ct =0             # counter
+    flat_s =[]
+    
+    
+    
+    for c in x:
+        flat_s.append(c)
+
+    for i in range(len(flat_s)):
+        e=flat_s[i]
+        
+        
+        if e =="[" or e== "]":
+            continue
+            
+     
+        elif (e== "'" or e== '"') and status == False: #bu kısımda eğer "" içerisinde yazılmış bir değer varsa onu bir 
+            status  = True                             #sonraki " görene kadar birleştirip tek bir değer olarak listeye katiyor
+            continue
+        elif (e== "'" or e== '"') and status:
+            status  = False
+            last_value.append("".join(l))
+
+            try:
+                int("".join(l))      # değerimizin int e dönüşebiliyorsa indexi kayit ediliyor
+                note.append(ct)
+            except ValueError:
+                pass
+            l=[]
+            ct+=1
+            continue
+        if status:
+            l.append(e)
+        else:
+            last_value.append(e)
+            ct+=1
+    
+    """
+    Burada ilk inputta intiger olarak girilmiş sayıları intigera dönüştürüp listeye ekliyoruz dönüştürülmeyenler ise
+    string olarak kaliyor.
+    """
+
+    
+    for i in range(len(last_value)):
+        try:
+            last_value[i]=int(last_value[i])
+        except ValueError:
+            pass
+    
+    
+    """
+    # yukarıda indexini kaydetiğimiz ve intigera dönüşen string olaran girilmiş sayılar geri stringe dönüştürülüyor
+    """    
+    for e in note: 
+        last_value[e]=str(last_value[e])
+        
+    return last_value
+
+
+
+    """
+    split fonksyonu eğer listesnin içinde 10 veya 10 dan büyük eleman varsa her bir basamağını ayrı bir eleman olarak 
+    aliyordu o ayrı yazılan elemanları birleştirmek için combination fonksyonu yazılmıştır
+
+    """
+def combination (inpt):
+    xt   =inpt
+    arr  = []   
+    """
+    Bu döngüde eğer virgülden önce birden fazla sayı yanyana yazilyiorsa onu saptıyoruz
+    [3, 2, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 3, 2, 1, 0, 1, 0, 0]
+    eğer birden yüksek rakam varsa orada peşpeşe yazılmış bir sayı oldğunu anlıyoruz
+    """
+    
+    for i in range(len(xt)-1):
+        ct1     = 0
+
+        while True:   
+
+            if isinstance(xt[i+ct1], int):
+                ct1 += 1
+            else:
+                arr.append(ct1)
+                break
+
+
+    """
+    Bu döngüde ise yukarıda saptadığımız bitişik sayıları birleştirip tek bir eleman olarak listeye yeniden ekliyoruz
+    """
+    
+    
+    while True:
+        temp=""
+        if max(arr)>1:
+            maxx = max(arr)
+            idx  = arr.index(maxx)
+            for e in xt[idx:(idx+maxx)]:
+                temp+= str(e)
+
+            for _ in range(maxx):
+                del xt[idx]
+
+            for _ in range(maxx-1):
+                del arr[idx]
+
+            xt.insert(idx,int(temp))
+
+        else: 
+            break
+
+            
+    """
+    En son işlem olarakda listedeki virgüllerden kurtulup listemizin son halini elde ediyoruz 
+    """
+    
+    output =[]
+    for e in xt:
+        if e == ",":
+            continue
+        output.append(e)
+        
+    return output
+
+
+"""####################################
+Buranın yukarısı proje 1 ile aynı 
+"""####################################
+
+
+def word_division (inpt):
+    """
+    Bu fonksyone giren değerleri öncelikle elemanlarına ayırıyor sonrasında ise liste içerisinde boşluk varsa kaldırıyoruz
+    """
+    inpt= list(inpt)
+    output1=[]
+    for e in inpt[1:-1]:
+        if e == " ":
+            continue
+        output1.append(e)
+    return output1
+
+
+def separate_elements(output1):
+    """
+    Burda daha öncesinde list ile her bir karakteri ayırdığımız listemizi listenin içindeki 
+    virgüllere göre elemanlarına ayırıyoruz
+    
+    ['23', '[1,2]', '[3,4,[11,12]]', '[5,6,"elma",7]']
+    
+    """
+    value = []
+    l=[]
+    status = True
+    counter=0
+
+    for i in range(len(output1)):
+        e= output1[i]
+
+        if e== "[":
+            counter +=1
+
+        elif e== "]":
+            counter -=1
+
+
+        if e == "," and counter == 0:
+            value.append("".join(l))
+            l=[]
+        elif i==(len(output1)-1):
+            l.append(e)
+            value.append("".join(l))
+            l=[]
+
+        else:
+            l.append(e)
+            
+    return value
+
+
+def unpack (arr):
+    """
+    separate_elements fonksyonunda virgüle göre ayırdığımız elemanları kendi içlerinde ayırıyoruz burda da
+    ['23', ['1', '2'], ['3', '4', ['11', '12']], ['5', '6', '"elma"', '7']]
+    """
+    output=[]
+    for e in arr:
+        if e[0] == "[":
+            output.append(unpack(separate_elements(word_division(e))))
+        
+        
+        else:
+            output.append(e)
+    
+    return output
+
+
+def match (arr,target):
+    """
+    proje 1 de yazdığımız kod ile bu arrayi en sade haline getiriyoruz
+    [23, 1, 2, 3, 4, 11, 12, 5, 6, 'elma', 7]
+    
+    daha sonrasında ise "unpack" fonksyonunda elde etiğimiz liste ile bu değerleri birleştiriyoruz 
+    [23, [1, 2], [3, 4, [11, 12]], [5, 6, 'elma', 7]]
+    
+    sıfırdan casting ile uğraşmak istemediğim için böyle bir yol izledim
+    
+    """
+    
+    idx =0
+    for e in arr:
+
+        if type(arr[idx]) == list:
+            
+            temp,target = match(arr[idx],target)
+            arr[idx] = temp
+            idx+=1
+            
+        else:
+            arr[idx]= target[0]
+            idx+=1
+            del target[0]
+
+    
+    return arr,target
+
+
+def reverse (arr):
+    """
+    listenin içinde gezerek bütün elemanlar tersine çevriliyor
+    """
+    idx =0
+    for e in arr:
+        if type(e) == list:
+            reverse(e)
+            idx+=1
+        else:
+            idx+=1
+    return arr.reverse()
+    
+    
+# Ana gövde
+
+inpt=list(input())
+
+first_step= combination(split(inpt))
+output=[]
+for e in first_step:
+    if e == " ":
+        continue
+    output.append(e)
+    
+x1,output= match(unpack(separate_elements(word_division(inpt))),output)
+reverse(x1)
+print(x1)
