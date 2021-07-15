@@ -1,0 +1,27 @@
+def clear(arr):
+    temp= []
+    strng = False
+    for e in arr:
+        if e == "[" or e == "]":
+            continue
+        elif e == "'" or e == '"':
+            strng = True
+
+        else:
+            temp.append(e)
+    temp = "".join(temp)
+    
+    if strng:
+        pass
+    else:    
+        temp = int(temp)
+
+    return temp
+
+inpt = input().split(",")
+
+output =[[]for _ in range(len(inpt))]
+for i in range(len(inpt)):
+    output[i] = clear(inpt[i])
+    
+print(output)
