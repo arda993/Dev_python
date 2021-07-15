@@ -2,7 +2,7 @@
 # Ornek input olarak =  [[1,'a',['cat'],2],[[[3]],'dog'],4,5]
 # Beklenilen sonuc   =  [1,'a','cat',2,3,'dog',4,5]
 
-# Bu input'da farklı olarak string olarak verilen saylar ve fazladan kelimeler yer aliyor
+# Bu input'da farklı olaran str olarak verilen saylar ve fazladan kelimeler yer aliyor
 # Bir baska input    =  [[1,'a',['cat'],2],[[[3]],'dog'],4,5,[['apple']],'banana'"1"]   
 # Beklenilen sonuc   =  [1, 'a', 'cat', 2, 3, 'dog', 4, 5, 'apple', 'banana', '1']
 
@@ -89,11 +89,20 @@ def combination (inpt):
     
     for i in range(len(xt)-1):
         ct1     = 0
+        negative = False
 
-        while True:   
+        while True: 
+
+            if(i+ct1) == len(xt):
+                arr.append(ct1)
+                break
 
             if isinstance(xt[i+ct1], int):
                 ct1 += 1
+
+            elif xt[i+ct1]== "-" and negative== False:
+                ct1+=1
+                negative=True
             else:
                 arr.append(ct1)
                 break
